@@ -19,7 +19,7 @@ We will be practicing our coding skills on data from [TidyTuesday](https://githu
 
 * make a folder on your desktop and call it something like "programming workshops"
 * download and place the following script and data files into that folder (i.e. right-click and 'Save Link As"):
-    * [Introduction to Data Analysis in R-template.rmd](R/Introduction to Data Analysis in R-template.rmd)
+    * [Introduction to Data Analysis in R template](R/Introduction to Data Analysis in R-template.rmd?raw=1)
     * [reputation.csv](R/reputation.csv?raw=1)
     * [reputation_wide.csv](R/reputation_wide.csv?raw=1)
 
