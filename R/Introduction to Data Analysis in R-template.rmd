@@ -3,9 +3,9 @@ title: "Introduction to Data Analysis in R"
 author: "Derek Sollberger"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
-    toc: yes
   word_document:
+    toc: yes
+  pdf_document:
     toc: yes
   html_document:
     toc: yes
