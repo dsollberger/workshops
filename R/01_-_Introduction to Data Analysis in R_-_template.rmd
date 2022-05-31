@@ -2,9 +2,13 @@
 title: "Introduction to Data Analysis in R"
 author: "Derek Sollberger"
 date: "`r Sys.Date()`"
-output: 
+output:
+  pdf_document:
+    toc: yes
+  word_document:
+    toc: yes
   html_document:
-    toc: TRUE
+    toc: yes
 ---
 
 ```{r setup, message = FALSE, warning = FALSE}
@@ -39,21 +43,21 @@ At this point, you can look at the `environment` pane (upper-right area in RStud
 Another way to take a quick look at the data is with the `head` command to view the first few rows.
 
 ```{r}
-head(reputation)
+
 ```
 
 ```{r}
-head(reputation_wide)
+
 ```
 
 For our purposes, we should look at the structure of each data set.  In R, this is processed with the `str` command.  In particular, this view clarifies which columns are numerical and which are categorical.
 
 ```{r}
-str(reputation, give.attr = FALSE)
+
 ```
 
 ```{r}
-str(reputation_wide, give.attr = FALSE)
+
 ```
 
 # Sample Statistics
@@ -61,29 +65,63 @@ str(reputation_wide, give.attr = FALSE)
 To get a sense of the numbers, we can compute sample statistics (such as the mean, median, and standard deviation) for a numerical variable.
 
 ```{r}
-reputation |>
-  summarize(mean = mean(score, na.rm = TRUE),
-            median = median(score, na.rm = TRUE),
-            sd = sd(score, na.rm = TRUE))
+
 ```
 
 The `R` programming language becomes really useful when we want to perform our tedious calculations across several categories.  Notice how the inclusion of one line of code below helps us compute the sample statistics for each survey category.
 
 ```{r}
-reputation |>
-  group_by(name) |>
-  summarize(mean = mean(score, na.rm = TRUE),
-            median = median(score, na.rm = TRUE),
-            sd = sd(score, na.rm = TRUE))
+
 ```
 
 In today's exploration, I am interested in the possible differences in the survey scores across the industries.
 
 ```{r}
-reputation |>
-  group_by(industry) |>
-  summarize(mean = mean(score, na.rm = TRUE),
-            median = median(score, na.rm = TRUE),
-            sd = sd(score, na.rm = TRUE))
+
+```
+
+# Data Visualization
+
+## Histogram
+
+A histogram allows us to visualize the distribution of one numerical variable.
+
+```{r}
+
+```
+
+## Scatterplot
+
+A scatterplot allows us to visualize a pair of numerical variables.
+
+```{r}
+
+```
+
+
+## Boxplot
+
+A boxplot allows us to visualize numerical distributions across a categorical variable.
+
+```{r}
+
+```
+
+```{r}
+
+```
+Let us see what happens if we explore the `industry` categorical variable.
+
+```{r}
+
+```
+
+To start to ease the complexity, we can (for example)
+
+* focus on two of the categories
+* remove the legend
+
+```{r}
+
 ```
 

@@ -1,0 +1,191 @@
+---
+title: "Introduction to Data Analysis in R"
+author: "Derek Sollberger"
+date: "`r Sys.Date()`"
+output:
+  word_document:
+    toc: yes
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, message = FALSE, warning = FALSE}
+library("corrplot")
+library("forcats")
+library("janitor")
+library("skimr")
+library("tidyverse")
+```
+
+# Today's Data Set
+
+This survey is the result of a partnership between Axios and Harris Poll to gauge the reputation of the most visible brands in America, based on 20 years of Harris Poll research. From Trader Joe's to Disney, here's how this year's class stacks up.
+
+"Methodology: The Axios Harris Poll 100 is based on a survey of 33,096 Americans in a nationally representative sample conducted March 11-April 3, 2022. The two-step process starts fresh each year by surveying the public’s top-of-mind awareness of companies that either excel or falter in society.
+
+"These 100 “most visible companies” are then ranked by a second group of Americans across the seven key dimensions of reputation to arrive at the ranking. If a company is not on the list, it did not reach a critical level of visibility to be measured."
+
+Since we have CSV files (comma-separated values), we can use the `read_csv` function in the `readr` package to load the file into our current programming session.
+
+```{r, message = FALSE, warning = FALSE}
+reputation <- readr::read_csv("reputation.csv",
+                              name_repair = janitor::make_clean_names)
+reputation_wide <- readr::read_csv("reputation_wide.csv",
+                                   name_repair = janitor::make_clean_names)
+```
+
+# Exploring the Data
+
+At this point, you can look at the `environment` pane (upper-right area in RStudio), and click on the name of a data frame (e.g. `reputation`) to open up a viewer to take a look at the data.
+
+Another way to take a quick look at the data is with the `head` command to view the first few rows.
+
+```{r}
+head(reputation)
+```
+
+```{r}
+head(reputation_wide)
+```
+
+For our purposes, we should look at the structure of each data set.  In R, this is processed with the `str` command.  In particular, this view clarifies which columns are numerical and which are categorical.
+
+```{r}
+str(reputation, give.attr = FALSE)
+```
+
+```{r}
+str(reputation_wide, give.attr = FALSE)
+```
+
+# Sample Statistics
+
+To get a sense of the numbers, we can compute sample statistics (such as the mean, median, and standard deviation) for a numerical variable.
+
+```{r}
+reputation |>
+  summarize(mean = mean(score, na.rm = TRUE),
+            median = median(score, na.rm = TRUE),
+            sd = sd(score, na.rm = TRUE))
+```
+
+The `R` programming language becomes really useful when we want to perform our tedious calculations across several categories.  Notice how the inclusion of one line of code below helps us compute the sample statistics for each survey category.
+
+```{r}
+reputation |>
+  group_by(name) |>
+  summarize(mean = mean(score, na.rm = TRUE),
+            median = median(score, na.rm = TRUE),
+            sd = sd(score, na.rm = TRUE))
+```
+
+In today's exploration, I am interested in the possible differences in the survey scores across the industries.
+
+```{r}
+reputation |>
+  group_by(industry) |>
+  summarize(mean = mean(score, na.rm = TRUE),
+            median = median(score, na.rm = TRUE),
+            sd = sd(score, na.rm = TRUE))
+```
+
+# Data Visualization
+
+## Histogram
+
+A histogram allows us to visualize the distribution of one numerical variable.
+
+```{r}
+reputation |>
+  ggplot(aes(x = score)) +
+  geom_histogram(color = "black", fill = "blue") +
+  labs(title = "Company Reputation Survey",
+       subtitle = "2022",
+       caption = "Source: Axios and Harris, TidyTuesday",
+       x = "reputation score")
+```
+
+## Scatterplot
+
+A scatterplot allows us to visualize a pair of numerical variables.
+
+```{r}
+correlation_value <- reputation_wide |>
+  summarize(r = cor(trust, culture,
+                    use = "pairwise.complete.obs")) |>
+  unlist()
+
+reputation_wide |>
+  ggplot(aes(x = trust, y = culture)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Company Reputation Survey",
+       subtitle = paste0("correlation: r = ",
+                         round(correlation_value, 4)),
+       caption = "Source: Axios and Harris, TidyTuesday",
+       x = "trust score",
+       y = "culture score")
+```
+
+
+## Boxplot
+
+A boxplot allows us to visualize numerical distributions across a categorical variable.
+
+```{r}
+reputation |>
+  ggplot(aes(y = score)) +
+  geom_boxplot(color = "black", fill = "red") +
+  labs(title = "Company Reputation Survey",
+       subtitle = "an example of a single boxplot",
+       caption = "Source: Axios and Harris, TidyTuesday",
+       x = "",
+       y = "reputation score")
+```
+
+```{r}
+reputation |>
+  ggplot(aes(x = name, y = score, 
+             fill = name, group = name)) +
+  geom_boxplot(color = "black") +
+  labs(title = "Company Reputation Survey",
+       subtitle = "an example of a single boxplot",
+       caption = "Source: Axios and Harris, TidyTuesday",
+       x = "",
+       y = "reputation score")
+```
+Let us see what happens if we explore the `industry` categorical variable.
+
+```{r}
+reputation |>
+  ggplot(aes(x = industry, y = score, 
+             fill = industry, group = industry)) +
+  geom_boxplot(color = "black") +
+  labs(title = "Company Reputation Survey",
+       subtitle = "an example of a single boxplot",
+       caption = "Source: Axios and Harris, TidyTuesday",
+       x = "",
+       y = "reputation score")
+```
+
+To start to ease the complexity, we can (for example)
+
+* focus on two of the categories
+* remove the legend
+
+```{r}
+reputation |>
+  filter(industry %in% c("Healthcare", "Media")) |>
+  ggplot(aes(x = industry, y = score,
+             fill = industry)) +
+  geom_boxplot() +
+  labs(title = "Reputation Survey",
+       subtitle = "March 11 to April 3, 2022",
+       caption = "Source: Axios and Harris, TidyTuesday",
+       x = "industry",
+       y = "reputation") +
+  theme(legend.position = "none")
+```
+
