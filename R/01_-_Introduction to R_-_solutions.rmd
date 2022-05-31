@@ -1,0 +1,15 @@
+---
+title: "Introduction to R"
+author: "Derek Sollberger"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library("corrplot")
+library("forcats")
+library("janitor")
+library("skimr")
+library("tidyverse")
+```
+
