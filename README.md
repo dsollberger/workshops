@@ -21,6 +21,7 @@ We will be practicing our coding skills on data from [TidyTuesday](https://githu
 * download and place the following script and data files into that folder:
     * [01_-_Introduction_to_Data_Analysis_in_R_-_student_template.rmd]()
     * [reputation.csv](R/reputation.csv?raw=1)
+    * [reputation_wide.csv](R/reputation_wide.csv?raw=1)
 
 # Python
 
