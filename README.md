@@ -14,3 +14,10 @@ In this repository, I plan on maintaining my programming workshops.  Most of the
 package_list <- c("corrplot", "forcats", "janitor", "skimr", "tidyverse")
 install.packages(package_list)
 ```
+
+# Python
+
+## Installation Instructions
+
+1. I advise new learners to install the Anadonca distribution ([link to instructions](https://libguides.ucmerced.edu/software-carpentry/python/install)) to ease their Python learning experience.
+2. To start the program, search for "Anaconda" in your Windows search or Mac Finder, and start a Jupyter Lab session.
