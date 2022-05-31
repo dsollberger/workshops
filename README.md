@@ -15,6 +15,13 @@ package_list <- c("corrplot", "forcats", "janitor", "skimr", "tidyverse")
 install.packages(package_list)
 ```
 
+We will be practicing our coding skills on data from [TidyTuesday](https://github.com/rfordatascience/tidytuesday).  *To avoid 'file does not exist' errors later*:
+
+* make a folder on your desktop and call it something like "programming workshops"
+* download and place the following script and data files into that folder:
+    * [01_-_Introduction_to_Data_Analysis_in_R_-_student_template.rmd]()
+    * [reputation.csv](R/reputation.csv)
+
 # Python
 
 ## Installation Instructions
