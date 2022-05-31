@@ -23,6 +23,10 @@ We will be practicing our coding skills on data from [TidyTuesday](https://githu
     * [reputation.csv](R/reputation.csv?raw=1)
     * [reputation_wide.csv](R/reputation_wide.csv?raw=1)
 
+Videos (will be uploaded after sessions take place):
+* Day 1: Introduction to Data Analysis in R
+* Day 2: Intermediate Data Analysis in R
+
 # Python
 
 ## Installation Instructions
