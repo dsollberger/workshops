@@ -67,7 +67,12 @@ If our data is a *sample*, can we generalize to a larger *population*?  The fiel
 For example, what is the true population mean for the ethics score for the food delivery industry?  We can use the `infer` package to handle the simulations and computation.
 
 ```{r}
-
+reputation_wide |>
+  filter(industry == "Food Delivery") |>
+  specify(response = ethics) |>
+  generate(reps = 1000, type = "bootstrap") |>
+  calculate(stat = "mean") |>
+  get_ci(level = 0.95, type = "percentile")
 ```
 
 We are 95 percent confident that the true population mean for the ethics score for the food delivery industry is in between 70.5 and 74.6 (on a scale from 0 to 100).
@@ -94,11 +99,17 @@ reputation |>
   ggplot(aes(x = industry, y = score,
              fill = industry)) +
   geom_boxplot() +
+  geom_signif(
+    comparisons = list(c("Healthcare", "Media")),
+    map_signif_level = TRUE
+  ) +
   labs(title = "Reputation Survey",
        subtitle = "March 11 to April 3, 2022",
        caption = "Source: Axios and Harris, TidyTuesday",
        x = "industry",
        y = "reputation") +
+  ylim(50, 100) +
+  theme_minimal() + #removes gray background
   theme(legend.position = "none")
 ```
 
@@ -119,7 +130,23 @@ We can use the `ggsignif` package to indicate the significance level on our boxp
 * p-value < 0.001: ***
 
 ```{r}
-
+reputation |>
+  filter(industry %in% c("Pharma", "Retail")) |>
+  ggplot(aes(x = industry, y = score,
+             fill = industry)) +
+  geom_boxplot() +
+  geom_signif(
+    comparisons = list(c("Pharma", "Retail")),
+    map_signif_level = TRUE
+  ) +
+  labs(title = "Reputation Survey",
+       subtitle = "March 11 to April 3, 2022",
+       caption = "Source: Axios and Harris, TidyTuesday",
+       x = "industry",
+       y = "reputation") +
+  ylim(50, 100) +
+  theme_minimal() + #removes gray background
+  theme(legend.position = "none")
 ```
 
 Since the p-value > 0.05, we fail to reject the claim of equal means between the pharmacy and retail industries.
@@ -133,42 +160,91 @@ In this longer example, I am going to show you an example of improving a graph i
 Let us start with the framework for a bar chart.
 
 ```{r}
-
+reputation_wide |>
+  ggplot(aes(x = company, y = culture)) +
+  geom_bar(stat = "identity")
 ```
 
 Next, we can use the `forcats` package to help us reorder the data from highest to lowest.
 
 ```{r}
-
+reputation_wide |>
+  mutate(company_ranked = fct_reorder(company, culture, .desc = TRUE)) |>
+  ggplot(aes(x = company_ranked, y = culture)) +
+  geom_bar(stat = "identity")
 ```
 
 The graph is still crowded, so let us focus on the top 10 companies.
 
 ```{r}
-
+reputation_wide |>
+  mutate(company_ranked = fct_reorder(company, culture, .desc = TRUE)) |>
+  top_n(10) |>
+  ggplot(aes(x = company_ranked, y = culture)) +
+  geom_bar(stat = "identity")
 ```
 
 The labels for the company names are overlapping and still hard to read.  One way to ease the congestion is to switch what are on the x- and y-axes.
 
 ```{r}
-
+reputation_wide |>
+  mutate(company_ranked = fct_reorder(company, culture)) |>
+  top_n(10) |>
+  ggplot(aes(x = culture, y = company_ranked)) +
+  geom_bar(stat = "identity")
 ```
 
 While the viewer can find a lot of information on this graph, we can ease the view by putting the company names on the bars themselves!  Furthermore, we can specify the culture score values too.
 
 ```{r}
-
+reputation_wide |>
+  mutate(company_ranked = fct_reorder(company, culture)) |>
+  top_n(10) |>
+  ggplot(aes(x = culture, y = company_ranked)) +
+  geom_bar(stat = "identity") +
+  geom_label(aes(x = culture/2, y = company_ranked, label = company_ranked)) +
+  geom_label(aes(x = culture, y = company_ranked, label = culture))
 ```
 
 Now, the y-axis labels are redundant, so we can remove them and some of the other elements of the `theme`
 
 ```{r}
-
+reputation_wide |>
+  mutate(company_ranked = fct_reorder(company, culture)) |>
+  top_n(10) |>
+  ggplot(aes(x = culture, y = company_ranked)) +
+  geom_bar(stat = "identity") +
+  geom_label(aes(x = culture/2, y = company_ranked, label = company_ranked)) +
+  geom_label(aes(x = culture, y = company_ranked, label = culture)) +
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank(),
+        panel.background = element_blank()) +
+  labs(title = "Company Reputation Poll",
+       subtitle = "Top 10 in Workplace Culture",
+       caption = "Source: Axios and Harris, TidyTuesday",
+       x = "culture score",
+       y = "")
 ```
 
 We can use the `fill` aesthetic to highlight another category.  Let's see how the industries are represented in this top 10 list.
 
 ```{r}
-
+reputation_wide |>
+  mutate(company_ranked = fct_reorder(company, culture)) |>
+  top_n(10) |>
+  ggplot(aes(x = culture, y = company_ranked)) +
+  geom_bar(aes(fill = industry),
+           color = "black",
+           stat = "identity") +
+  geom_label(aes(x = culture/2, y = company_ranked, label = company_ranked)) +
+  geom_label(aes(x = culture, y = company_ranked, label = culture)) +
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank(),
+        panel.background = element_blank()) +
+  labs(title = "Company Reputation Poll",
+       subtitle = "Top 10 in Workplace Culture",
+       caption = "Source: Axios and Harris, TidyTuesday",
+       x = "culture score",
+       y = "")
 ```
 
